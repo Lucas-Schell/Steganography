@@ -36,6 +36,7 @@ void load(char* name, Img* pic)
 
 int main(int argc, char** argv)
 {
+    //carrega imagem
     Img pic;
     if(argc < 1)
     {
@@ -44,15 +45,18 @@ int main(int argc, char** argv)
     }
     load(argv[1], &pic);
 
+
+    //input
     char message[20];
-    printf("input message: ");
+    printf("Digite a mensagem: ");
     scanf("%s", message);
 
     char password[20];
-    printf("\ninput password: ");
+    printf("\nDigite a senha: ");
     scanf("%s", password);
 
 
+    //funcoes sobre a senha
     int soma = 0;
     for (int i = 0; i < strlen(password); i++)
     {
@@ -70,8 +74,11 @@ int main(int argc, char** argv)
     {
         message[i] = message[i] + desl;
     }
-
+    printf("mensagem cript %s\n",message);
     printf("inicio: %d, desloc: %d, cifra: %d\n",soma,media,desl);
+
+
+    //esteganografia
     int j = 0;
     unsigned int pixel, test, cod;
     for(int i=soma; i<pic.height*pic.width; i = i + media)
@@ -105,13 +112,18 @@ int main(int argc, char** argv)
 
     free(pic.img);
 
+
+    //load para descriptografar
     load("saida.bmp", &pic);
 
 
+
     char password1[20];
-    printf("\ninput password: ");
+    printf("\nDigite a senha: ");
     scanf("%s", password1);
 
+
+    //funcoes sobre a senha
     int soma1 = 0;
     for (int i = 0; i < strlen(password1); i++)
     {
@@ -126,6 +138,54 @@ int main(int argc, char** argv)
     }
 
     printf("inicio: %d, desloc: %d, cifra: %d\n",soma1,media1,desl1);
+
+
+    //decodificacao da esteganografia
+    char message1[20];
+    int k = 0;
+    unsigned int pixel1, test1, cod1;
+    printf("Mensagem final: ");
+    for(int i=soma1; i<pic.height*pic.width; i = i + media1)
+    {
+        if(k >= 20){
+            break;
+        }
+        pixel1 = pic.img[i].r;
+        //printf("\n\naa final: %d",pixel1);
+        test1 = pixel1 & 0X07;
+        //printf(" bb final: %d",test1);
+        cod1 = test1 << 5;
+        //printf(" cc final: %d",cod1);
+
+        pixel1 = pic.img[i].g;
+        //printf("\n\naa final: %d",pixel1);
+        test1 = pixel1 & 0X07;
+        //printf(" bb final: %d",test1);
+        cod1 = cod1 | (test1 << 2);
+        //printf(" cc final: %d",cod1);
+
+        pixel1 = pic.img[i].b;
+        //printf("\n\naa final: %d",pixel1);
+        test1 = pixel1 & 0X03;
+        //printf(" bb final: %d",test1);
+        cod1 = test1 | cod1;
+        //printf(" cc final: %d",cod1);
+
+        if(cod1 > 0){
+            message1[k] = cod1;
+            printf("%c",cod1 - desl1);
+        }else{
+            break;
+        }
+
+        k++;
+    }
+
+
+    free(pic.img);
+
+
+
 
 
 }
