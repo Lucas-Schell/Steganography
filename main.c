@@ -144,10 +144,11 @@ int main(int argc, char** argv)
     char message1[20];
     int k = 0;
     unsigned int pixel1, test1, cod1;
-    printf("Mensagem final: ");
+    printf("\nMensagem final: ");
     for(int i=soma1; i<pic.height*pic.width; i = i + media1)
     {
-        if(k >= 20){
+        if(k >= 20)
+        {
             break;
         }
         pixel1 = pic.img[i].r;
@@ -171,21 +172,19 @@ int main(int argc, char** argv)
         cod1 = test1 | cod1;
         //printf(" cc final: %d",cod1);
 
-        if(cod1 > 0){
+        if(cod1 > 0)
+        {
             message1[k] = cod1;
             printf("%c",cod1 - desl1);
-        }else{
+        }
+        else
+        {
             break;
         }
 
         k++;
     }
 
-
+    printf("\n");
     free(pic.img);
-
-
-
-
-
 }
